@@ -6,6 +6,9 @@
   ...
 }:
 
+let
+  nix2container = inputs.nix2container.packages.${pkgs.stdenv.system}.nix2container;
+in
 {
   name = "pi-coding-agent";
 
@@ -23,6 +26,11 @@
 
   containers."pi" = {
     name = "pi";
+    fromImage = nix2container.pullImage {
+      imageName = "docker.io/library/alpine";
+      imageDigest = "sha256:5b10f432ef3da1b8d4c7eb6c487f2f5a8f096bc91145e68878dd4a5019afde11";
+      sha256 = "sha256-qxpJA0RokrXxYIIh74d65Kfc3DL9NZG4UuNre7NiqTk=";
+    };
     copyToRoot = [
       pkgs.vim
       pkgs.bashInteractive
@@ -56,6 +64,6 @@
 
   scripts.pi-run.exec = ''
     echo "Running container and mounting current directory..."
-    docker run -it --rm -v "$(pwd):/workspace" pi
+    docker run --network host -it --rm -v "$(pwd):/workspace" pi
   '';
 }
