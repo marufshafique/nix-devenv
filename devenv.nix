@@ -53,12 +53,4 @@
     devenv container copy pi
     docker run -it --rm -v "$(pwd):/workspace" pi
   '';
-
-  enterShell = ''
-    echo $SHELL
-  '';
-
-  enterTest = ''
-    echo "Running tests"
-  '';
 }
