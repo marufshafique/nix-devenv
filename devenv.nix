@@ -48,9 +48,14 @@
   };
 
   # Create a custom host shortcut command
-  scripts.pi-container.exec = ''
+  scripts.pi-build.exec = ''
     echo "Building container and mounting current directory..."
     devenv container copy pi
+    docker run -it --rm -v "$(pwd):/workspace" pi
+  '';
+
+  scripts.pi-run.exec = ''
+    echo "Running container and mounting current directory..."
     docker run -it --rm -v "$(pwd):/workspace" pi
   '';
 }
