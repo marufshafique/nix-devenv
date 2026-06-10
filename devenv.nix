@@ -19,6 +19,7 @@
     neovim
     ncurses
     vim
+    claude-code
   ];
 
   containers."pi" = {
