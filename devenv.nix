@@ -13,6 +13,15 @@ in
   name = "pi-coding-agent";
 
   env.GREET = "devenv";
+  env.DEEPSEEK_API_KEY = config.secretspec.secrets.DEEPSEEK_API_KEY;
+  env.ANTHROPIC_BASE_URL = config.secretspec.secrets.ANTHROPIC_BASE_URL;
+  env.ANTHROPIC_MODEL = config.secretspec.secrets.ANTHROPIC_MODEL;
+  env.ANTHROPIC_AUTH_TOKEN = config.secretspec.secrets.ANTHROPIC_AUTH_TOKEN;
+  env.ANTHROPIC_DEFAULT_OPUS_MODEL = config.secretspec.secrets.ANTHROPIC_DEFAULT_OPUS_MODEL;
+  env.ANTHROPIC_DEFAULT_SONNET_MODEL = config.secretspec.secrets.ANTHROPIC_DEFAULT_SONNET_MODEL;
+  env.ANTHROPIC_DEFAULT_HAIKU_MODEL = config.secretspec.secrets.ANTHROPIC_DEFAULT_HAIKU_MODEL;
+  env.CLAUDE_CODE_SUBAGENT_MODEL = config.secretspec.secrets.CLAUDE_CODE_SUBAGENT_MODEL;
+  env.CLAUDE_CODE_EFFORT_LEVEL = config.secretspec.secrets.CLAUDE_CODE_EFFORT_LEVEL;
 
   packages = with pkgs; [
     bashInteractive
@@ -22,6 +31,7 @@ in
     neovim
     ncurses
     vim
+    claude-code
   ];
 
   containers."pi" = {
@@ -39,6 +49,7 @@ in
       pkgs.file
       pkgs.neovim
       pkgs.ncurses
+      pkgs.claude-code
     ];
 
     startupCommand = ''
@@ -59,7 +70,7 @@ in
   scripts.pi-build.exec = ''
     echo "Building container and mounting current directory..."
     devenv container copy pi
-    docker run -it --rm -v "$(pwd):/workspace" pi
+    docker run --network host -it --rm -v "$(pwd):/workspace" pi
   '';
 
   scripts.pi-run.exec = ''

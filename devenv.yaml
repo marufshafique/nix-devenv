@@ -1,3 +1,10 @@
+secretspec:
+  enable: true
+  profile: default
+  provider: keyring  # keyring, dotenv, env, 1password, lastpass
+
+allowUnfree: true
+
 inputs:
   mk-shell-bin:
     url: github:rrbutani/nix-mk-shell-bin
