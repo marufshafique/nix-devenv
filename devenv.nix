@@ -10,7 +10,7 @@ let
   nix2container = inputs.nix2container.packages.${pkgs.stdenv.system}.nix2container;
 in
 {
-  name = "pi-coding-agent";
+  name = "devcontainer docker";
 
   env.GREET = "devenv";
   env.DEEPSEEK_API_KEY = config.secretspec.secrets.DEEPSEEK_API_KEY;
@@ -25,14 +25,28 @@ in
 
   packages = with pkgs; [
     bashInteractive
-    pi-coding-agent
     fd
     file
     neovim
     ncurses
     vim
     claude-code
+    go
+    nodejs
+    postgresql_16
+    love
+    lua
+    pi-coding-agent
+    bun
   ];
+
+  services.postgres = {
+    enable = true;
+    package = pkgs.postgresql_16;
+    listen_addresses = "127.0.0.1";
+    port = 5433;
+    initialDatabases = [{ name = "pi"; pass = "test12345"; user = "admin"; }];
+  };
 
   containers."pi" = {
     name = "pi";
@@ -41,15 +55,21 @@ in
       imageDigest = "sha256:5b10f432ef3da1b8d4c7eb6c487f2f5a8f096bc91145e68878dd4a5019afde11";
       sha256 = "sha256-qxpJA0RokrXxYIIh74d65Kfc3DL9NZG4UuNre7NiqTk=";
     };
-    copyToRoot = [
-      pkgs.vim
-      pkgs.bashInteractive
-      pkgs.pi-coding-agent
-      pkgs.fd
-      pkgs.file
-      pkgs.neovim
-      pkgs.ncurses
-      pkgs.claude-code
+    copyToRoot = with pkgs; [
+      vim
+      bashInteractive
+      fd
+      file
+      neovim
+      ncurses
+      claude-code
+      go
+      nodejs
+      postgresql_16
+      love
+      lua
+      pi-coding-agent
+      bun
     ];
 
     startupCommand = ''
@@ -62,6 +82,8 @@ in
       mkdir -p ~/.pi/agent
       cp ${./models.json} ~/.pi/agent/models.json
 
+      cd /workspace 2>/dev/null || true
+
       exec bash
     '';
   };
@@ -70,11 +92,11 @@ in
   scripts.pi-build.exec = ''
     echo "Building container and mounting current directory..."
     devenv container copy pi
-    docker run --network host -it --rm -v "$(pwd):/workspace" pi
+    docker run --network host -it --rm -w /workspace -v "$(pwd):/workspace" pi
   '';
 
   scripts.pi-run.exec = ''
     echo "Running container and mounting current directory..."
-    docker run --network host -it --rm -v "$(pwd):/workspace" pi
+    docker run --network host -it --rm -w /workspace -v "$(pwd):/workspace" pi
   '';
 }
