@@ -2,7 +2,7 @@
   description = "Pi Coding Agent — devenv environment";
 
   inputs = {
-    nixpkgs.url = "github:cachix/devenv-nixpkgs/rolling";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     devenv.url = "github:cachix/devenv";
     devenv.inputs.nixpkgs.follows = "nixpkgs";
   };
