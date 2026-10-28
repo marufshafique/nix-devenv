@@ -10,6 +10,7 @@
   name = "pi-coding-agent";
 
   env.GREET = "devenv";
+  env.NODE_EXTRA_CA_CERTS = "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt";
 
   packages = with pkgs; [
     bashInteractive
